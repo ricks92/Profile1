@@ -2,9 +2,7 @@ package com.hsc.cat.service;
 
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +14,8 @@ import com.hsc.cat.repository.ProfileRepository;
 import com.hsc.cat.repository.SkillProfileRepository;
 
 @Service
+//@org.springframework.transaction.annotation.Transactional(propagation=Propagation.REQUIRES_NEW)
+@Transactional
 public class ProfileService {
 
 	@Autowired
@@ -27,8 +27,7 @@ private SkillProfileService skillProfileService;
 	@Autowired
 	private SkillProfileRepository skillProfileRepository;
 	
-	@PersistenceContext
-	EntityManager entityManager;
+
 	
 	public CreateProfileTO createProfile(CreateProfileVO profileVO) {
 		
@@ -82,9 +81,9 @@ private SkillProfileService skillProfileService;
 			{
 				//delete previous skills
 				//skillProfileRepository.deleteByProfileId(saved.getId());
-				String query="Delete from SkillProfileEntity e WHERE e.profileId=:profileId";
-				Query q=entityManager.createQuery(query);
-				q.setParameter("profileId",saved.getId());
+//				String query="Delete from SkillProfileEntity e WHERE e.profileId=:profileId";
+//				Query q=entityManager.createQuery(query);
+//				q.setParameter("profileId",saved.getId());
 			}
 			for(String skill:profileVO.getSelectedSkills()) {
 				skillProfileService.saveSkillProfile(skill, saved.getId());
